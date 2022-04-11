@@ -1,0 +1,74 @@
+version: '3.2'
+networks:
+  todo-net:
+    driver: bridge
+volumes:
+  postgres: null
+services:
+  todo-redis:
+    restart: unless-stopped
+    image: 'redis:5'
+    container_name: todo-redis
+    ports:
+      - '8379:6379'
+    networks:
+      - todo-net
+  todo-dbpg:
+    container_name: todo-dbpg
+    restart: unless-stopped
+    image: 'library/postgres:12.6'
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - '8432:5432'
+    volumes:
+      - 'postgres:/var/lib/postgresql'
+    networks:
+      - todo-net
+  todo-pgadmin:
+    restart: unless-stopped
+    container_name: todo-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_DEFAULT_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - './database/backups:/backups'
+    ports:
+      - '8880:80'
+    networks:
+      - todo-net
+    depends_on:
+      - todo-dbpg
+  todo-frontend:
+    restart: unless-stopped
+    command: yarn start
+    container_name: todo-frontend
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    volumes:
+      - './frontend/project:/app/frontend'
+    ports:
+      - '8300:3000'
+    stdin_open: true
+    depends_on: []
+    networks:
+      - todo-net
+  todo-api:
+    restart: unless-stopped
+    container_name: todo-api
+    command: 'bash -c "python3 check_db.py --service-name postgres --ip todo-dbpg --port 5432 && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"'
+    build:
+      context: ./api/
+      dockerfile: Dockerfile
+    volumes:
+      - './api/:/app/api'
+    ports:
+      - '8800:8000'
+    depends_on:
+      - todo-dbpg
+      - todo-redis
+    networks:
+      - todo-net
