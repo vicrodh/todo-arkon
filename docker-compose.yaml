@@ -43,13 +43,14 @@ services:
       - todo-dbpg
   todo-frontend:
     restart: unless-stopped
-    command: yarn start
+    command: npm start
     container_name: todo-frontend
     build:
       context: ./frontend/
       dockerfile: Dockerfile
     volumes:
-      - './frontend/project:/app/frontend'
+      - './frontend/project/src:/app/frontend/src'
+      - './frontend/project/public:/app/frontend/public'
     ports:
       - '8300:3000'
     stdin_open: true
