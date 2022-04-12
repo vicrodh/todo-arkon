@@ -1,10 +1,10 @@
 # core/routers.py
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import SimpleRouter, DefaultRouter
 from core.user.viewsets import UserViewSet
 from core.auth.viewsets import LoginViewSet, RegistrationViewSet, RefreshViewSet
 
 
-routes = SimpleRouter()
+routes = DefaultRouter()
 
 # AUTHENTICATION
 routes.register(r'auth/login', LoginViewSet, basename='auth-login')

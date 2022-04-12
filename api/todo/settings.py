@@ -46,11 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 3rd Party Apps
     'corsheaders',
+    'django_filters',
+    'rest_framework',
 
     # My Apps
     'core',
     'core.user',
     'core.auth',
+    'tasks',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +71,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://localhost:8300',
     'http://172.*:7300',
+    'http://*',
 ]
 
 ROOT_URLCONF = 'todo.urls'
@@ -125,6 +129,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     )
 }
 
