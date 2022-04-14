@@ -4,6 +4,7 @@ networks:
     driver: bridge
 volumes:
   postgres: null
+  node_modules: null
 services:
   todo-redis:
     restart: unless-stopped
@@ -49,8 +50,10 @@ services:
       context: ./frontend/
       dockerfile: Dockerfile
     volumes:
-      - './frontend/project/src:/app/frontend/src'
-      - './frontend/project/public:/app/frontend/public'
+      #- './frontend/project/src:/app/frontend/src'
+      #- './frontend/project/public:/app/frontend/public'
+      - './frontend/project:/app/frontend'
+      - 'node_modules:/app/frontend/node_modules'
     ports:
       - '8300:3000'
     stdin_open: true

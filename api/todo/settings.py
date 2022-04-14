@@ -70,8 +70,9 @@ MIDDLEWARE = [
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://localhost:8300',
-    'http://172.*:7300',
-    'http://*',
+    'http://172.*:3000',
+    'http://172.*:3000',
+    'http://172.22.0.6:3000',
 ]
 
 ROOT_URLCONF = 'todo.urls'
